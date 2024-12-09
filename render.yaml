@@ -1,7 +1,0 @@
-services:
-  - type: web
-    name: express-backend
-    env: node
-    plan: free
-    buildCommand: 'npm install'
-    startCommand: 'npm run start'
