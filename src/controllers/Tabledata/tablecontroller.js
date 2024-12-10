@@ -1,4 +1,4 @@
-const TableData = require("../models/TableData");
+const TableData = require("../../models/table");
 
 // Add new table entry
 exports.addData = async (req, res) => {
@@ -11,7 +11,7 @@ exports.addData = async (req, res) => {
   }
 };
 
-// Get all data
+// Get all data 
 exports.getAllData = async (req, res) => {
   try {
     const data = await TableData.find();
