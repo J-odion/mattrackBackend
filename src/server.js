@@ -11,7 +11,7 @@ connectDB();
 const app = express();
 
 const ALLOWED_ORIGINS = [
- 
+  "https://mattrack.vercel.app",
   "http://localhost:3000",
   "http://localhost:5000",
   "http://localhost:3001",
@@ -24,10 +24,11 @@ app.use(bodyParser.json());
 // CORS configuration
 const corsOptions = {
   origin: function (origin, callback) {
-    const allowedOrigins = ALLOWED_ORIGINS;
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+    console.log("Origin: ", origin);
+    if (!origin || ALLOWED_ORIGINS.indexOf(origin) !== -1) {
       callback(null, true);
     } else {
+      console.error(`Blocked by CORS: ${origin}`);
       callback(new Error("Not allowed by CORS"));
     }
   },
@@ -38,9 +39,11 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
+app.options("*", cors(corsOptions)); // Handle preflight requests
 
 const PORT = process.env.PORT || 5000;
 
 app.use("/api", require("./routes/tableRoutes"));
 app.use(errorHandler);
+
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
