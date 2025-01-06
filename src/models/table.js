@@ -2,29 +2,53 @@ const mongoose = require("mongoose");
 
 // Define Schema
 const tableDataSchema = new mongoose.Schema({
-  site: { 
-    type: String, 
-    required: true 
+  materialManagement: {
+    type: String,
+    default: "",
   },
-  houseType: { 
-    type: String, 
-    required: true 
+  materialCategory: {
+    type: String,
+    required: true,
   },
-  purpose: { 
-    type: String, 
-    required: true 
+  materialName: {
+    type: String,
+    required: true,
   },
-  material: { 
-    type: String, 
-    required: true 
+  quantity: {
+    type: Number,
+    required: true,
   },
-  subMaterial: { 
-    type: String, 
-    default: null 
+  siteLocation: {
+    type: String,
+    required: true,
   },
-  date: { 
-    type: Date, 
-    required: true 
+  unit: {
+    type: String,
+    required: true,
+  },
+  recipientName: {
+    type: String,
+    default: "",
+  },
+  houseType: {
+    type: String,
+    default: "",
+  },
+  houseNumber: {
+    type: String,
+    default: "",
+  },
+  purpose: {
+    type: String,
+    default: "",
+  },
+  storeKeepersName: {
+    type: String,
+    required: true,
+  },
+  date: {
+    type: Date,
+    default: Date.now,
   },
 });
 

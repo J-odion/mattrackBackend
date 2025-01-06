@@ -1,14 +1,56 @@
-const Agents = require("../../models/TableData");
+const TableData = require("../../models/TableData");
 
 exports.addData = async (req, res) => {
   try {
-    const { site, houseType, purpose, material, subMaterial, date } = req.body;
-    if (!site || !houseType || !purpose || !material || !date) {
+    const {
+      materialManagement = "",
+      materialCategory,
+      materialName,
+      quantity,
+      siteLocation,
+      unit,
+      recipientName = "",
+      houseType = "",
+      houseNumber = "",
+      purpose = "",
+      storeKeepersName,
+      date = new Date(),
+    } = req.body;
+
+    // Validate required fields
+    if (
+      !materialCategory ||
+      !materialName ||
+      !quantity ||
+      !siteLocation ||
+      !unit ||
+      !storeKeepersName
+    ) {
       return res.status(400).json({ error: "Missing required fields" });
     }
-    const newData = new TableData({ site, houseType, purpose, material, subMaterial, date });
+
+    // Create a new document with the validated data
+    const newData = new TableData({
+      materialManagement,
+      materialCategory,
+      materialName,
+      quantity,
+      siteLocation,
+      unit,
+      recipientName,
+      houseType,
+      houseNumber,
+      purpose,
+      storeKeepersName,
+      date,
+    });
+
+    // Save the document to the database
     const savedData = await newData.save();
+
+    // Send success response
     res.status(201).json(savedData);
+    console.log("Data saved successfully", savedData);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: "Failed to save data", details: err.message });
