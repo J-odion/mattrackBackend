@@ -23,15 +23,7 @@ app.use(bodyParser.json());
 
 // CORS configuration
 const corsOptions = {
-  origin: function (origin, callback) {
-    console.log("Origin: ", origin);
-    if (!origin || ALLOWED_ORIGINS.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      console.error(`Blocked by CORS: ${origin}`);
-      callback(new Error("Not allowed by CORS"));
-    }
-  },
+  origin:  ALLOWED_ORIGINS,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
