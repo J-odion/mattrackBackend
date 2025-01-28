@@ -50,6 +50,13 @@ const tableDataSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  assignedUsers: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+  ],
+  
 });
 
 // Create Model
