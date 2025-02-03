@@ -1,4 +1,4 @@
-const TableData = require("../../models/TableData");
+const TableData = require("../../models/table");
 
 exports.addData = async (req, res) => {
   try {

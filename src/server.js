@@ -2,8 +2,10 @@ const express = require("express");
 const connectDB = require("./utils/database");
 const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
+const auth = require("./middleware/auth");
 const cors = require("cors");
 const errorHandler = require("./middleware/error");
+
 
 dotenv.config();
 connectDB();
@@ -13,6 +15,7 @@ const app = express();
 const ALLOWED_ORIGINS = [
   "https://mattrack.vercel.app",
   "http://localhost:3000",
+  "http://localhost:6000",
   "http://localhost:5000",
   "http://localhost:3001",
 ];
@@ -23,7 +26,14 @@ app.use(bodyParser.json());
 
 // CORS configuration
 const corsOptions = {
-  origin:  ALLOWED_ORIGINS,
+  origin: function (origin, callback) {
+    const allowedOrigins = ALLOWED_ORIGINS;
+    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,
@@ -33,8 +43,9 @@ const corsOptions = {
 app.use(cors(corsOptions));
 app.options("*", cors(corsOptions)); // Handle preflight requests
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT;
 
+app.use("/api", require("./routes/user"));
 app.use("/api", require("./routes/tableRoutes"));
 app.use(errorHandler);
 

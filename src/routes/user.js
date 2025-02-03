@@ -1,9 +1,14 @@
-const { authorizeRole } = require("../middleware/authorization");
-const router = require("express").Router();
-const { createUser, getUsers, updateUserRole } = require("../controllers/userController");
+const express = require("express");
+const { signup } = require("../controllers/createStaff/createStaff");
+const { login } = require("../controllers/createStaff/login");
+const { verifyOtp, resendOtp } = require("../controllers/createStaff/otpVerification");
 
-router.post("/users", authorizeRole(["superAdmin"]), createUser);
-router.get("/users", authorizeRole(["superAdmin"]), getUsers);
-router.put("/users/:id/role", authorizeRole(["superAdmin"]), updateUserRole);
+const router = express.Router();
+
+router.post("/register", signup);
+router.post("/login", login);
+
+router.post('/verify-otp', verifyOtp);
+router.post('/resend-otp', resendOtp);
 
 module.exports = router;

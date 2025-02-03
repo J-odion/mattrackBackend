@@ -9,6 +9,8 @@ const userSchema = new mongoose.Schema({
     enum: ["superAdmin", "viewer", "staff"],
     default: "viewer",
   },
+  otp: { type: String },
+  isVerified: { type: Boolean, default: false },
 });
 
 const User = mongoose.model("User", userSchema);
