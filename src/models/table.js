@@ -2,10 +2,6 @@ const mongoose = require("mongoose");
 
 // Define Schema
 const tableDataSchema = new mongoose.Schema({
-  materialManagement: {
-    type: String,
-    default: "",
-  },
   materialCategory: {
     type: String,
     required: true,
@@ -18,33 +14,17 @@ const tableDataSchema = new mongoose.Schema({
     type: Number,
     required: true,
   },
-  siteLocation: {
-    type: String,
-    required: true,
-  },
   unit: {
     type: String,
     required: true,
   },
-  recipientName: {
+  siteLocation: {
     type: String,
-    default: "",
+    required: true,
   },
   houseType: {
     type: String,
     default: "",
-  },
-  houseNumber: {
-    type: String,
-    default: "",
-  },
-  purpose: {
-    type: String,
-    default: "",
-  },
-  storeKeepersName: {
-    type: String,
-    required: true,
   },
   date: {
     type: Date,

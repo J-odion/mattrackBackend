@@ -1,29 +1,30 @@
 const User = require('../../models/user');
-const sendEmail = require('../../utils/sendEmail'); // Utility to send email
+const sendEmail = require('../../utils/sendEmail');
 
 // OTP Verification logic
 exports.verifyOtp = async (req, res) => {
     const { email, otp } = req.body;
 
+    console.log('trying to verifyOtp')
+
     try {
         let user = await User.findOne({ email });
-
         if (!user) {
+            console.log({msg: 'user not found'})
             return res.status(400).json({ msg: 'User not found' });
         }
 
         // Check if OTP matches
         if (user.otp !== otp) {
+            console.log({msg: 'Invalid OTP'})
             return res.status(400).json({ msg: 'Invalid OTP' });
         }
-
         // Verify user
         user.isVerified = true;
-        user.otp = undefined; // Clear the OTP after verification
+        user.otp = undefined;
         await user.save();
-
+        console.log({msg: 'User verified successfully'})
         res.status(200).json({ msg: 'User verified successfully' });
-
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server error');

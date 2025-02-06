@@ -1,28 +1,25 @@
-const jwt = require('jsonwebtoken');
-const User = require('../models/createStaff');
-const dotenv = require('dotenv');
+const jwt = require("jsonwebtoken");
+const User = require("../models/user"); // Ensure this points to your User model
 
-dotenv.config();
-
-module.exports = async function (req, res, next) {
-  const token = req.header('x-auth-token');
-
-  if (!token) {
-    return res.status(401).json({ msg: 'No token, authorization denied' });
-  }
-
+exports.verifyToken = async (req, res, next) => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.user = decoded.user;
+    const token = req.header("Authorization").replace("Bearer ", "");
+    if (!token) return res.status(401).json({ error: "Access Denied. No token provided." });
 
-    // Check if the user is verified
-    const user = await User.findById(req.user.id);
-    if (!user.isVerified) {
-      return res.status(403).json({ msg: 'User not verified' });
-    }
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = await User.findById(decoded.id).select("-password"); // Attach user without password
+
+    if (!req.user) return res.status(401).json({ error: "User not found" });
 
     next();
   } catch (err) {
-    res.status(401).json({ msg: 'Token is not valid' });
+    res.status(401).json({ error: "Invalid token", details: err.message });
   }
+};
+
+exports.requireStorekeeper = (req, res, next) => {
+  if (!req.user || req.user.role !== "storekeepers") {
+    return res.status(403).json({ error: "Access denied. Storekeepers only." });
+  }
+  next();
 };

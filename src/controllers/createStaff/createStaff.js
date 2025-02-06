@@ -4,9 +4,10 @@ const sendEmail = require('../../utils/sendEmail');
 
 exports.signup = async (req, res) => {
     const { name, email, password, role } = req.body;
+    
+    console.log('Signup request body:', req.body);
 
     try {
-        console.log('Signup request body:', req.body);
 
         let user = await User.findOne({ email });
         if (user) {
@@ -17,6 +18,7 @@ exports.signup = async (req, res) => {
         // Hash the password before saving
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        
         user = new User({
             name,
             email,
@@ -35,7 +37,7 @@ exports.signup = async (req, res) => {
         await sendEmail(user.email, 'Email Verification', `Your OTP is ${otp}`);
         console.log('OTP email sent to:', user.email);
 
-        res.status(201).json({ msg: 'User registered, OTP sent to email' });
+        res.status(201).json({user, msg: 'User registered, OTP sent to email' });
     } catch (err) {
         console.error('Error during signup:', err.message);
         res.status(500).send('Server error');
