@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 
 // Define Schema
 const tableDataSchema = new mongoose.Schema({
+  received: {
+    type: String,
+    required: true,
+  },
   materialCategory: {
     type: String,
     required: true,

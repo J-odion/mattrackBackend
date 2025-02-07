@@ -14,6 +14,7 @@ const app = express();
 
 const ALLOWED_ORIGINS = [
   "https://mattrack.vercel.app",
+  "https://mattrack-app.vercel.app/",
   "http://localhost:3000",
   "http://localhost:6000",
   "http://localhost:5000",

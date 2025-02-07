@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 
 // Define Schema
 const disbursedDataSchema = new mongoose.Schema({
+  disbursed: {
+    type: String,
+    required: true,
+  },
   materialCategory: {
     type: String,
     required: true,
@@ -15,13 +19,13 @@ const disbursedDataSchema = new mongoose.Schema({
     required: true,
   },
   unit: {
-      type: String,
-      required: true,
-    },
-    siteLocation: {
-      type: String,
-      required: true,
-    },
+    type: String,
+    required: true,
+  },
+  siteLocation: {
+    type: String,
+    required: true,
+  },
   recipientName: {
     type: String,
     default: "",
@@ -48,7 +52,7 @@ const disbursedDataSchema = new mongoose.Schema({
       ref: "User",
     },
   ],
-  
+
 });
 
 // Create Model
