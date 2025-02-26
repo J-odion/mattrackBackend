@@ -26,10 +26,6 @@ const tableDataSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  houseType: {
-    type: String,
-    default: "",
-  },
   date: {
     type: Date,
     default: Date.now,

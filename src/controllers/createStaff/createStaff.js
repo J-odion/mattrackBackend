@@ -8,7 +8,6 @@ exports.signup = async (req, res) => {
     console.log('Signup request body:', req.body);
 
     try {
-
         let user = await User.findOne({ email });
         if (user) {
             console.log('User already exists:', user);
@@ -18,7 +17,6 @@ exports.signup = async (req, res) => {
         // Hash the password before saving
         const hashedPassword = await bcrypt.hash(password, 10);
 
-        
         user = new User({
             name,
             email,

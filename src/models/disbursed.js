@@ -34,10 +34,6 @@ const disbursedDataSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
-  houseNumber: {
-    type: String,
-    default: "",
-  },
   purpose: {
     type: String,
     default: "",

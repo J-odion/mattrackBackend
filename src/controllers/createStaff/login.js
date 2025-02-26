@@ -8,14 +8,11 @@ dotenv.config();
 exports.login = async (req, res) => {
   const { email, password } = req.body;
 
-  // Log the incoming request body
-  console.log("Login request body:", req.body);
+
 
   try {
     let user = await User.findOne({ email }).select("+password");
 
-    // Log the retrieved user
-    console.log("User retrieved:", user);
 
     if (!user) {
       return res.status(400).json({ msg: "Invalid Email address - User not found" });

@@ -1,13 +1,15 @@
-const AgentSchema = require("../../models/agents");
+const User = require('../../models/user');
+
 
 
 //GET ALL RESOURCES
-exports.getAllAgents = async (req, res) => {
+exports.getAllStaff = async (req, res) => {
     try {
-        const userAgents = await AgentSchema.find({ user: req.user.id });
-        res.status(200).json(userAgents);
+        const users = await User.find(); // Fetch all users
+        res.status(200).json(users);
+        console.log(users);
     } catch (err) {
         console.error(err.message);
-        res.status(500).send('Server error');
+        res.status(500).send("Server error");
     }
 };

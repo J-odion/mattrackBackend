@@ -14,7 +14,8 @@ const app = express();
 
 const ALLOWED_ORIGINS = [
   "https://mattrack.vercel.app",
-  "https://mattrack-app.vercel.app/",
+  "https://mattrack-app.vercel.app",
+  "https://mattrack.kairoshof.com",
   "http://localhost:3000",
   "http://localhost:6000",
   "http://localhost:5000",
@@ -42,12 +43,13 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options("*", cors(corsOptions)); // Handle preflight requests
+app.options("*", cors(corsOptions));
 
 const PORT = process.env.PORT;
 
 app.use("/api", require("./routes/user"));
 app.use("/api", require("./routes/tableRoutes"));
+app.use("/api", require("./routes/standardAllocation"));
 app.use(errorHandler);
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

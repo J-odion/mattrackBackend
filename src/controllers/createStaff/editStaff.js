@@ -1,33 +1,27 @@
-const AgentSchema = require("../../models/agents");
+const User = require('../../models/user');
 
-exports.updateAgent = async (req, res) => {
-    const { id } = req.params;
-    const { industry, name, location, entity } = req.body;
+
+// UPDATE STAFF
+exports.updateStaff = async (req, res) => {
+    const { id } = req.params; // Get staff ID from request params
+    const { name, email, role, isVerified } = req.body; // Extract fields from request body
 
     try {
-        let userAgents = await AgentSchema.findById(id);
-
-        if (!userAgents) {
-            return res.status(404).json({ msg: 'Agent not found' });
+        let staff = await User.findById(id);
+        if (!staff) {
+            return res.status(404).json({ message: "Staff member not found" });
         }
 
-        console.log('Agent user ID:', userAgents.user.toString());
-        console.log('Agent user ID:', req.user.id);
+        // Update allowed fields
+        staff.name = name || staff.name;
+        staff.email = email || staff.email;
+        staff.role = role || staff.role;
 
-        // Ensure the user owns the resource
-        if (userAgents.user.toString() !== req.user.id ) {
-            return res.status(401).json({ msg: 'User not authorized' });
-        }
+        await staff.save(); // Save the updated staff member
 
-        updAgt = await AgentSchema.findByIdAndUpdate(
-            id,
-            { industry, name, location, entity },
-            { new: true }
-        );
-
-        res.status(200).json({msg: 'Agent updated successfully'});
+        res.status(200).json({ message: "Staff updated successfully", staff });
     } catch (err) {
         console.error(err.message);
-        res.status(500).send('Server error');
+        res.status(500).send("Server error");
     }
 };
