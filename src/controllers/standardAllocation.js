@@ -73,3 +73,21 @@ exports.deleteStandardAllocation = async (req, res) => {
     res.status(500).json({ error: "Failed to delete Standard Allocation", details: error.message });
   }
 };
+
+exports.getSiteStandardAllocations = async (req, res) => {
+  try {
+    const { siteLocation, houseType, purpose } = req.query;
+
+    // Build filter object dynamically
+    let filter = {};
+    if (siteLocation) filter.siteLocation = siteLocation;
+    if (houseType) filter.houseType = houseType;
+    if (purpose) filter.purpose = purpose;
+
+    const allocations = await StandardAllocation.find(filter);
+
+    res.json({ count: allocations.length, data: allocations });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch Standard Allocations", details: error.message });
+  }
+};
