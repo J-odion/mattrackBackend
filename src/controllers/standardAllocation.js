@@ -4,13 +4,19 @@ exports.createStandardAllocation = async (req, res) => {
   try {
     const { purpose, materials, siteLocation, houseType, createdBy } = req.body;
 
+    // Check if an allocation with the same purpose and siteLocation exists
+    const existingAllocation = await StandardAllocation.findOne({ purpose, siteLocation, houseType });
+    if (existingAllocation) {
+      return res.status(400).json({ error: "Standard Allocation already exists for this location" });
+    }
+
     const newAllocation = new StandardAllocation({
       purpose,
       materials,
       siteLocation,
       houseType,
-      createdBy,  // Ensure createdBy is passed
-      updatedBy: createdBy || "system", // Set updatedBy to createdBy or a default value
+      createdBy,
+      updatedBy: createdBy || "system",
     });
 
     await newAllocation.save();
@@ -19,7 +25,6 @@ exports.createStandardAllocation = async (req, res) => {
     res.status(500).json({ error: "Failed to create Standard Allocation", details: error.message });
   }
 };
-
 
 exports.updateStandardAllocation = async (req, res) => {
   try {

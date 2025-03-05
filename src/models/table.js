@@ -6,22 +6,21 @@ const tableDataSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  materialCategory: {
+  houseType: {
     type: String,
     required: true,
   },
-  materialName: {
+  houseId: {
     type: String,
     required: true,
   },
-  quantity: {
-    type: Number,
-    required: true,
-  },
-  unit: {
-    type: String,
-    required: true,
-  },
+  materials: [
+    {
+      materialName: { type: String, required: true },
+      quantity: { type: Number, required: true },
+      unit: { type: String, required: true },
+    },
+  ],
   siteLocation: {
     type: String,
     required: true,

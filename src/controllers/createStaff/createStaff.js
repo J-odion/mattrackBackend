@@ -8,34 +8,46 @@ exports.signup = async (req, res) => {
     console.log('Signup request body:', req.body);
 
     try {
-        let user = await User.findOne({ email });
+        const normalizedEmail = email.toLowerCase().trim();
+        let user = await User.findOne({ email: normalizedEmail });
+
         if (user) {
             console.log('User already exists:', user);
             return res.status(400).json({ msg: 'User already exists' });
         }
 
-        // Hash the password before saving
-        const hashedPassword = await bcrypt.hash(password, 10);
+        // Hash password securely
+        const saltRounds = parseInt(process.env.BCRYPT_SALT_ROUNDS) || 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        // Generate OTP
+        const otp = Math.floor(100000 + Math.random() * 900000).toString();
+        const otpExpires = Date.now() + 10 * 60 * 1000; // 10 minutes
 
         user = new User({
             name,
-            email,
-            password: hashedPassword, // Save the hashed password
-            isVerified: false, // Initial state
-            role
+            email: normalizedEmail,
+            password: hashedPassword,
+            isVerified: false,
+            role,
+            otp,
+            otpExpires
         });
 
-        // Generate 6-digit OTP and save to user record
-        const otp = Math.floor(100000 + Math.random() * 900000).toString();
-        user.otp = otp;
         await user.save();
         console.log('User saved with OTP:', user);
 
         // Send OTP email
-        await sendEmail(user.email, 'Email Verification', `Your OTP is ${otp}`);
-        console.log('OTP email sent to:', user.email);
+        try {
+            await sendEmail(user.email, 'Email Verification', `Your OTP is ${otp}`);
+            console.log('OTP email sent to:', user.email);
+        } catch (emailErr) {
+            console.error('Failed to send OTP email:', emailErr);
+            return res.status(500).json({ msg: 'Failed to send OTP, try again' });
+        }
 
-        res.status(201).json({user, msg: 'User registered, OTP sent to email' });
+        res.status(201).json({ user, msg: 'User registered, OTP sent to email' });
+
     } catch (err) {
         console.error('Error during signup:', err.message);
         res.status(500).send('Server error');

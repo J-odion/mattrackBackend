@@ -13,76 +13,88 @@ exports.addData = async (req, res) => {
 
   try {
     const {
-      received = "received", // Default value for received
-      materialCategory,
-      materialName,
-      quantity,
-      unit,
+      received = "received", // Default value
+      houseType,
+      houseId,
+      materials, // Expecting an array
       siteLocation,
-      date
+      date,
+      assignedUsers = [], // Default to empty array
     } = req.body;
 
-    // Check for missing fields
-    const requiredFields = ["materialCategory", "materialName", "quantity", "unit", "siteLocation", , "date"];
+    // Validate required fields
+    const requiredFields = ["houseType", "houseId", "materials", "siteLocation", "date"];
     const missingFields = requiredFields.filter(field => !req.body[field]);
 
     if (missingFields.length > 0) {
       return res.status(400).json({ error: `Missing required fields: ${missingFields.join(", ")}` });
     }
 
-    // Validate data types
-    if (isNaN(quantity)) {
-      return res.status(400).json({ error: "Quantity must be a number" });
+    // Validate materials array
+    if (!Array.isArray(materials) || materials.length === 0) {
+      return res.status(400).json({ error: "Materials must be a non-empty array" });
     }
 
+    // Validate date format
     if (isNaN(new Date(date).getTime())) {
       return res.status(400).json({ error: "Invalid date format" });
     }
 
-    // Create and save new data
-    const newData = new TableData({
-      received,
-      materialCategory,
-      materialName,
-      quantity: Number(quantity),
-      unit,
-      siteLocation,
-      date: new Date(date)
-    });
-
-    // Update inventory
-    const inventoryQuery = { materialName, materialCategory, siteLocation }; // Ensure uniqueness
-    let inventory = await Inventory.findOne(inventoryQuery).session(session);
-
-    if (!inventory) {
-      // If material doesn't exist in inventory, create a new entry
-      inventory = new Inventory({
-        materialName,
-        materialCategory,
-        totalQuantity: quantity,
-        unit,
-        siteLocation,
-      });
-    } else {
-      // If material exists, increase the total quantity using $inc operator
-      inventory.totalQuantity += quantity;
+    // Check each material for required properties
+    for (const material of materials) {
+      if (!material.materialName || isNaN(material.quantity) || !material.unit) {
+        return res.status(400).json({ error: "Each material must have materialName, quantity (number), and unit" });
+      }
     }
 
-    // Save both newData and inventory
-    await newData.save({ session });
-    await inventory.save({ session });
+    // Create new table data entry
+    const newData = new TableData({
+      received,
+      houseType,
+      houseId,
+      materials,
+      siteLocation,
+      date: new Date(date),
+      assignedUsers,
+    });
 
-    // Commit the transaction
+    // Update Inventory for each material
+    for (const material of materials) {
+      const { materialName, quantity, unit } = material;
+
+      const inventoryQuery = { materialName, siteLocation };
+      let inventory = await Inventory.findOne(inventoryQuery).session(session);
+
+      if (!inventory) {
+        // Create new inventory entry
+        inventory = new Inventory({
+          materialName,
+          totalQuantity: quantity,
+          unit,
+          siteLocation,
+        });
+      } else {
+        // Update existing inventory
+        inventory.totalQuantity += quantity;
+      }
+
+      await inventory.save({ session });
+    }
+
+    // Save table data
+    await newData.save({ session });
+
+    // Commit transaction
     await session.commitTransaction();
     session.endSession();
 
     res.status(201).json(newData);
   } catch (err) {
-    // Abort the transaction on error
+    // Abort transaction on error
     await session.abortTransaction();
     session.endSession();
 
-    console.error(err);
+    console.error("Error saving data:", err);
     res.status(500).json({ error: "Failed to save data", details: err.message });
   }
 };
@@ -96,7 +108,6 @@ exports.getAllData = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch data", details: err.message });
   }
 };
-
 // // Filter data
 exports.filterData = async (req, res) => {
   const { siteLocation, houseType, purpose, material, subMaterial, date } = req.query;
@@ -117,8 +128,6 @@ exports.filterData = async (req, res) => {
     res.status(500).json({ error: "Failed to apply filter", details: err.message });
   }
 };
-
-
 exports.addDisbursedData = async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -200,7 +209,6 @@ exports.addDisbursedData = async (req, res) => {
     res.status(500).json({ error: "Failed to save disbursed data", details: err.message });
   }
 };
-
 exports.getAllDisbursedData = async (req, res) => {
   try {
     const data = await DisbursedTable.find();
@@ -210,7 +218,6 @@ exports.getAllDisbursedData = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch data", details: err.message });
   }
 };
-
 // Filter data
 exports.filterDisbursedData = async (req, res) => {
   const { site, houseType, purpose, material, subMaterial, date } = req.query;
@@ -231,7 +238,6 @@ exports.filterDisbursedData = async (req, res) => {
     res.status(500).json({ error: "Failed to apply filter", details: err.message });
   }
 };
-
 exports.getInventory = async (req, res) => {
   try {
     const inventory = await Inventory.find();
@@ -241,7 +247,70 @@ exports.getInventory = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch inventory", details: err.message });
   }
 };
+// Filter data
+// exports.filterInventoryData = async (req, res) => {
+//   const { siteLocation, houseType, purpose, material, subMaterial, date } = req.query;
 
+//   const filter = {};
+//   if (siteLocation) filter.siteLocation = siteLocation; // Fixed typo
+//   if (houseType) filter.houseType = houseType;
+//   if (purpose) filter.purpose = purpose;
+//   if (material) filter.material = material;
+//   if (subMaterial) filter.subMaterial = subMaterial;
+//   if (date) filter.date = { $gte: new Date(date) };
+
+//   try {
+//     const filteredData = await Inventory.find(filter);
+//     res.status(200).json(filteredData);
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).json({ error: "Failed to apply filter", details: err.message });
+//   }
+// };
+exports.filterInventoryData = async (req, res) => {
+  try {
+    const { siteLocation, houseType, purpose, material, subMaterial, date, startDate, endDate } = req.query;
+
+    const filter = {};
+
+    if (siteLocation) filter.siteLocation = siteLocation;
+    if (houseType) filter.houseType = houseType;
+    if (purpose) filter.purpose = purpose;
+    if (material) filter.material = material;
+    if (subMaterial) filter.subMaterial = subMaterial;
+
+    // Handle date range filtering
+    if (startDate || endDate) {
+      filter.date = {};
+      if (startDate) filter.date.$gte = new Date(startDate);
+      if (endDate) filter.date.$lte = new Date(endDate);
+    } else if (date) {
+      filter.date = { $gte: new Date(date) }; // Fallback for a single date
+    }
+
+      // Pagination handling
+    const limit = parseInt(req.query.limit) || 20; // Default limit
+    const page = parseInt(req.query.page) || 1; // Default to first page
+    const skip = (page - 1) * limit;
+
+    // Fetch filtered data
+    const filteredData = await Inventory.find(filter).skip(skip).limit(limit);
+
+    // Count total records for pagination
+    const totalRecords = await Inventory.countDocuments(filter);
+
+    res.status(200).json({
+      data: filteredData,
+      totalRecords,
+      currentPage: page,
+      totalPages: Math.ceil(totalRecords / limit),
+    });
+
+  } catch (err) {
+    console.error("Error filtering inventory:", err);
+    res.status(500).json({ error: "Failed to apply filter", details: err.message });
+  }
+};
 exports.requestMaterial = async (req, res) => {
   const session = await mongoose.startSession();
   session.startTransaction();
@@ -279,8 +348,6 @@ exports.requestMaterial = async (req, res) => {
     res.status(500).json({ error: "Failed to save material request", details: err.message });
   }
 };
-
-
 exports.updateMaterialPricing = async (req, res) => {
   try {
     const { requestId } = req.params;
@@ -311,7 +378,6 @@ exports.updateMaterialPricing = async (req, res) => {
     res.status(500).json({ error: "Failed to update pricing", details: err.message });
   }
 };
-
 // Accept material request
 exports.acceptMaterialRequest = async (req, res) => {
   try {
@@ -328,8 +394,6 @@ exports.acceptMaterialRequest = async (req, res) => {
     res.status(500).json({ error: "Failed to approve material request", details: err.message });
   }
 };
-
-
 exports.reviewMaterialRequest = async (req, res) => {
   try {
     const { requestId } = req.params;
@@ -350,8 +414,6 @@ exports.reviewMaterialRequest = async (req, res) => {
     res.status(500).json({ error: "Failed to review material request", details: err.message });
   }
 };
-
-
 // Fetch all material requests with optional filtering by status
 exports.getMaterialRequest = async (req, res) => {
 
