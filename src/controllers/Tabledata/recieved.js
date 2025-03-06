@@ -10,16 +10,15 @@ exports.addData = async (req, res) => {
     try {
       const {
         received = "received", // Default value
-        houseType,
-        houseId,
-        materials, // Expecting an array
+        materials,
         siteLocation,
+        category,
         date,
         assignedUsers = [], // Default to empty array
       } = req.body;
   
       // Validate required fields
-      const requiredFields = ["houseType", "houseId", "materials", "siteLocation", "date"];
+      const requiredFields = [ "category", "materials", "siteLocation", "date"];
       const missingFields = requiredFields.filter(field => !req.body[field]);
   
       if (missingFields.length > 0) {
@@ -46,8 +45,7 @@ exports.addData = async (req, res) => {
       // Create new table data entry
       const newData = new TableData({
         received,
-        houseType,
-        houseId,
+        category,
         materials,
         siteLocation,
         date: new Date(date),
@@ -56,7 +54,7 @@ exports.addData = async (req, res) => {
   
       // Update Inventory for each material
       for (const material of materials) {
-        const { materialName, quantity, unit } = material;
+        const { materialName,category, quantity, unit } = material;
   
         const inventoryQuery = { materialName, siteLocation };
         let inventory = await Inventory.findOne(inventoryQuery).session(session);
@@ -64,6 +62,7 @@ exports.addData = async (req, res) => {
         if (!inventory) {
           // Create new inventory entry
           inventory = new Inventory({
+            category,
             materialName,
             totalQuantity: quantity,
             unit,

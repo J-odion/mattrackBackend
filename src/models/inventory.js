@@ -2,6 +2,10 @@ const mongoose = require("mongoose");
 
 // Define Inventory Schema
 const inventorySchema = new mongoose.Schema({
+    category: {
+        type: String,
+        required: false,
+    },
     materialName: {
         type: String,
         required: true,
