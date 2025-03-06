@@ -1,11 +1,5 @@
 const express = require("express");
-const { 
-    addData,  
-    getAllData, 
-    filterData, 
-    addDisbursedData, 
-    getAllDisbursedData, 
-    filterDisbursedData, 
+const {
     getInventory, 
     requestMaterial, 
     getMaterialRequest, 
@@ -13,6 +7,8 @@ const {
     filterInventoryData
 } = require("../controllers/Tabledata/tablecontroller");
 const { verifyToken, requireRole } = require("../middleware/auth");
+const { addData, getAllData, filterData } = require("../controllers/Tabledata/recieved");
+const { addDisbursedData, getAllDisbursedData, filterDisbursedData } = require("../controllers/Tabledata/disbursed");
 
 const router = express.Router();
 // inwards recieved

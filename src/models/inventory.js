@@ -2,14 +2,9 @@ const mongoose = require("mongoose");
 
 // Define Inventory Schema
 const inventorySchema = new mongoose.Schema({
-    materialCategory: {
-        type: String,
-        required: true,
-    },
     materialName: {
         type: String,
         required: true,
-        unique: true,
     },
     totalQuantity: {
         type: Number,
@@ -26,7 +21,9 @@ const inventorySchema = new mongoose.Schema({
     },
 });
 
-// Create Model
+// Ensure uniqueness of material per site
+inventorySchema.index({ materialName: 1, siteLocation: 1 }, { unique: true });
+
 const Inventory = mongoose.model("Inventory", inventorySchema);
 
 module.exports = Inventory;

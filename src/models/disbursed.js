@@ -6,10 +6,6 @@ const disbursedDataSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  materialCategory: {
-    type: String,
-    required: true,
-  },
   materialName: {
     type: String,
     required: true,

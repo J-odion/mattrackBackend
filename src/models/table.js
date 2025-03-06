@@ -6,14 +6,6 @@ const tableDataSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  houseType: {
-    type: String,
-    required: true,
-  },
-  houseId: {
-    type: String,
-    required: true,
-  },
   materials: [
     {
       materialName: { type: String, required: true },
