@@ -8,6 +8,7 @@ const tableDataSchema = new mongoose.Schema({
   },
   materials: [
     {
+      category: { type: String, required: false },
       materialName: { type: String, required: true },
       quantity: { type: Number, required: true },
       unit: { type: String, required: true },
@@ -21,7 +22,7 @@ const tableDataSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  assignedUsers: [
+  users: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

@@ -12,13 +12,12 @@ exports.addData = async (req, res) => {
         received = "received", // Default value
         materials,
         siteLocation,
-        category,
         date,
-        assignedUsers = [], // Default to empty array
+        user,
       } = req.body;
   
       // Validate required fields
-      const requiredFields = [ "category", "materials", "siteLocation", "date"];
+      const requiredFields = [ "materials", "siteLocation", "date", "user"];
       const missingFields = requiredFields.filter(field => !req.body[field]);
   
       if (missingFields.length > 0) {
@@ -37,7 +36,7 @@ exports.addData = async (req, res) => {
   
       // Check each material for required properties
       for (const material of materials) {
-        if (!material.materialName || isNaN(material.quantity) || !material.unit) {
+        if (!material.materialName || !material.materialName || isNaN(material.quantity) || !material.unit) {
           return res.status(400).json({ error: "Each material must have materialName, quantity (number), and unit" });
         }
       }
@@ -45,16 +44,15 @@ exports.addData = async (req, res) => {
       // Create new table data entry
       const newData = new TableData({
         received,
-        category,
         materials,
         siteLocation,
         date: new Date(date),
-        assignedUsers,
+        user,
       });
   
       // Update Inventory for each material
       for (const material of materials) {
-        const { materialName,category, quantity, unit } = material;
+        const { materialName, category, quantity, unit } = material;
   
         const inventoryQuery = { materialName, siteLocation };
         let inventory = await Inventory.findOne(inventoryQuery).session(session);
