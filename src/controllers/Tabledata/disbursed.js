@@ -55,7 +55,13 @@ exports.addDisbursedData = async (req, res) => {
       });
   
       // Update inventory
-      let inventory = await Inventory.findOne({  materialName, siteLocation, unit }).session(session);
+      // let inventory = await Inventory.findOne({  materialName, siteLocation, unit }).session(session);
+      let inventory = await Inventory.findOne({
+        materialName: { $regex: `^${materialName}$`, $options: "i" }, // Case-insensitive match
+        siteLocation,
+        unit
+      }).session(session);
+      
       if (!inventory) {
         // If material doesn't exist, throw an error
         throw new Error("Material does not exist in inventory.");
