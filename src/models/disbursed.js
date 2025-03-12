@@ -30,6 +30,10 @@ const disbursedDataSchema = new mongoose.Schema({
     type: String,
     default: "",
   },
+  constructionNumber: {
+    type: String,
+    default: "",
+  },
   purpose: {
     type: String,
     default: "",

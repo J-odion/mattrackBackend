@@ -14,17 +14,17 @@ exports.addDisbursedData = async (req, res) => {
         disbursed = "disbursed",
         recipientName,
         purpose,
-        materialCategory,
         materialName,
         quantity,
         unit,
         siteLocation,
         houseType,
+        constructionNumber,
         date
       } = req.body;
   
       // Check for missing fields
-      const requiredFields = ["purpose", "recipientName", "materialCategory", "materialName", "quantity", "unit", "siteLocation", "houseType", "date"];
+      const requiredFields = ["purpose", "recipientName",  "materialName", "quantity", "unit", "siteLocation", "houseType", "constructionNumber","date"];
       const missingFields = requiredFields.filter(field => !req.body[field]);
   
       if (missingFields.length > 0) {
@@ -43,19 +43,19 @@ exports.addDisbursedData = async (req, res) => {
       // Create and save new disbursed data
       const newDisbursedData = new DisbursedTable({
         disbursed,
-        materialCategory,
         materialName,
         quantity: Number(quantity),
         unit,
         siteLocation,
         purpose,
         houseType,
+        constructionNumber,
         recipientName,
         date: new Date(date)
       });
   
       // Update inventory
-      let inventory = await Inventory.findOne({ materialCategory, materialName, siteLocation, unit }).session(session);
+      let inventory = await Inventory.findOne({  materialName, siteLocation, unit }).session(session);
       if (!inventory) {
         // If material doesn't exist, throw an error
         throw new Error("Material does not exist in inventory.");
