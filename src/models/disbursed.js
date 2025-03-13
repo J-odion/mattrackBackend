@@ -9,6 +9,8 @@ const disbursedDataSchema = new mongoose.Schema({
   materialName: {
     type: String,
     required: true,
+    trim: true, 
+        lowercase: true
   },
   quantity: {
     type: Number,
@@ -25,7 +27,9 @@ const disbursedDataSchema = new mongoose.Schema({
   recipientName: {
     type: String,
     default: "",
+    trim: true,
   },
+  
   houseType: {
     type: String,
     default: "",
@@ -33,10 +37,12 @@ const disbursedDataSchema = new mongoose.Schema({
   constructionNumber: {
     type: String,
     default: "",
+    trim: true, 
   },
   purpose: {
     type: String,
     default: "",
+    trim: true, 
   },
   date: {
     type: Date,

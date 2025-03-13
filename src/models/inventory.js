@@ -5,10 +5,14 @@ const inventorySchema = new mongoose.Schema({
     category: {
         type: String,
         required: false,
+        trim: true, 
+        lowercase: true
     },
     materialName: {
         type: String,
         required: true,
+        trim: true, 
+        lowercase: true
     },
     totalQuantity: {
         type: Number,
@@ -17,11 +21,15 @@ const inventorySchema = new mongoose.Schema({
     },
     unit: {
         type: String,
-        required: true,
+        required: true, 
+        trim: true, 
+        lowercase: true
     },
     siteLocation: {
         type: String,
         required: true,
+        trim: true, 
+        lowercase: true
     },
 });
 
