@@ -9,6 +9,7 @@ const {
 const { verifyToken, requireRole } = require("../middleware/auth");
 const { addData, getAllData, filterData } = require("../controllers/Tabledata/recieved");
 const { addDisbursedData, getAllDisbursedData, filterDisbursedData } = require("../controllers/Tabledata/disbursed");
+const { transferMaterials, getAllTransfers } = require("../controllers/Tabledata/transfer");
 
 const router = express.Router();
 // inwards recieved
@@ -27,5 +28,8 @@ router.get("/inventory/filter", filterInventoryData )
 router.post("/requestMaterial", requestMaterial);
 router.put("/reviewMaterialRequest/:requestId", reviewMaterialRequest);
 router.get("/requestMaterial", getMaterialRequest);
+
+router.post("/transferMat", transferMaterials),
+router.get("/transferMat", getAllTransfers),
 
 module.exports = router;
