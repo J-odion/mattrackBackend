@@ -29,7 +29,4 @@ router.post("/requestMaterial", requestMaterial);
 router.put("/reviewMaterialRequest/:requestId", reviewMaterialRequest);
 router.get("/requestMaterial", getMaterialRequest);
 
-router.post("/transferMat", transferMaterials),
-router.get("/transferMat", getAllTransfers),
-
 module.exports = router;
