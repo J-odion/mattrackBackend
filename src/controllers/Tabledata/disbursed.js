@@ -89,7 +89,7 @@ exports.addDisbursedData = async (req, res) => {
   };
   exports.getAllDisbursedData = async (req, res) => {
     try {
-      const data = await DisbursedTable.find();
+      const data = await DisbursedTable.find().populate("user", "name");
       res.status(200).json(data);
     } catch (err) {
       console.error(err);
@@ -109,7 +109,7 @@ exports.addDisbursedData = async (req, res) => {
     if (date) filter.date = { $gte: new Date(date) };
   
     try {
-      const filteredData = await DisbursedTable.find(filter);
+      const filteredData = await DisbursedTable.find(filter).populate("user", "name");
       res.status(200).json(filteredData);
     } catch (err) {
       console.error(err);
