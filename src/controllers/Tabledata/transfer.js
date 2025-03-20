@@ -188,6 +188,3 @@ exports.getTransfers = async (req, res) => {
     res.status(500).json({ error: "Failed to fetch transfers", details: error.message });
   }
 };
-
-
-

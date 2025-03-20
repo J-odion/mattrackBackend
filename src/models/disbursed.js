@@ -48,7 +48,7 @@ const disbursedDataSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  assignedUsers: [
+  user: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
