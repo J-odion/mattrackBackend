@@ -2,37 +2,47 @@ const mongoose = require("mongoose");
 
 // Define Schema
 const TransferDataSchema = new mongoose.Schema({
-  transfer: {
-    type: String,
+  fromSite: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Site",
+    required: true,
+  },
+  toSite: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Site",
     required: true,
   },
   materials: [
     {
-      category: { type: String, required: false },
-      materialName: { type: String, required: true },
-      quantity: { type: Number, required: true },
-      unit: { type: String, required: true },
+      materialId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Material",
+        required: true,
+      },
+      quantity: {
+        type: Number,
+        required: true,
+      },
     },
   ],
-  sendingSite: {
-    type: String,
+  createdBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
     required: true,
   },
-  recievingSite: {
+  approvedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User",
+  },
+  status: {
     type: String,
-    required: true,
+    enum: ["pending", "completed"],
+    default: "pending",
   },
   date: {
     type: Date,
     default: Date.now,
   },
-  user: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    },
-  ],
-  
 });
 
 // Create Model
