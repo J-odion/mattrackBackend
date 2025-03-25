@@ -92,16 +92,39 @@ exports.addData = async (req, res) => {
     }
   };
   
+  // exports.getAllData = async (req, res) => {
+  //   try {
+  //     const data = await TableData.find();
+  //     res.status(200).json(data);
+  //   } catch (err) {
+  //     console.error(err);
+  //     res.status(500).json({ error: "Failed to fetch data", details: err.message });
+  //   }
+  // };
+  // // Filter data
+  
   exports.getAllData = async (req, res) => {
     try {
-      const data = await TableData.find();
-      res.status(200).json(data);
+      const page = parseInt(req.query.page) || 1; // Get page number from request, default to 1
+      const limit = 50; // Set limit to 50
+      const skip = (page - 1) * limit; // Calculate how many records to skip
+  
+      const data = await TableData.find().skip(skip).limit(limit);
+      const totalCount = await TableData.countDocuments(); // Get total records count
+  
+      res.status(200).json({
+        data,
+        currentPage: page,
+        totalPages: Math.ceil(totalCount / limit),
+        totalItems: totalCount,
+      });
     } catch (err) {
       console.error(err);
       res.status(500).json({ error: "Failed to fetch data", details: err.message });
     }
   };
-  // // Filter data
+  
+  
   exports.filterData = async (req, res) => {
     const { siteLocation, houseType, purpose, material, subMaterial, date } = req.query;
   
