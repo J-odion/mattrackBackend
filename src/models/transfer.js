@@ -3,20 +3,17 @@ const mongoose = require("mongoose");
 // Define Schema
 const TransferDataSchema = new mongoose.Schema({
   fromSite: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Site",
+    type: String,
     required: true,
   },
   toSite: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Site",
+    type: String,
     required: true,
   },
   materials: [
     {
       materialId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Material",
+        type: String,
         required: true,
       },
       quantity: {
@@ -26,13 +23,11 @@ const TransferDataSchema = new mongoose.Schema({
     },
   ],
   createdBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    type: String,
     required: true,
   },
   approvedBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "User",
+    type: String,
   },
   status: {
     type: String,
