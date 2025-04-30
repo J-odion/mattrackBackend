@@ -13,7 +13,9 @@ exports.addDisbursedData = async (req, res) => {
       const {
         disbursed = "disbursed",
         recipientName,
+        storeKeeperName,
         purpose,
+        levelofwork,
         materialName,
         quantity,
         unit,
@@ -24,7 +26,7 @@ exports.addDisbursedData = async (req, res) => {
       } = req.body;
   
       // Check for missing fields
-      const requiredFields = ["purpose", "recipientName",  "materialName", "quantity", "unit", "siteLocation", "houseType", "constructionNumber","date"];
+      const requiredFields = ["purpose", "recipientName"," storeKeeperName",  "materialName","levelofwork", "quantity", "unit", "siteLocation", "houseType", "constructionNumber","date"];
       const missingFields = requiredFields.filter(field => !req.body[field]);
   
       if (missingFields.length > 0) {
@@ -49,8 +51,10 @@ exports.addDisbursedData = async (req, res) => {
         siteLocation,
         purpose,
         houseType,
+        levelofwork,
         constructionNumber,
         recipientName,
+        storeKeeperName,
         date: new Date(date)
       });
   

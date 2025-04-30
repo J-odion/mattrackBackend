@@ -29,7 +29,11 @@ const disbursedDataSchema = new mongoose.Schema({
     default: "",
     trim: true,
   },
-  
+  storeKeeperName: {
+    type: String,
+    default: "",
+    trim: true,
+  },
   houseType: {
     type: String,
     default: "",
@@ -40,6 +44,11 @@ const disbursedDataSchema = new mongoose.Schema({
     trim: true, 
   },
   purpose: {
+    type: String,
+    default: "",
+    trim: true, 
+  },
+  levelofwork: {
     type: String,
     default: "",
     trim: true, 
