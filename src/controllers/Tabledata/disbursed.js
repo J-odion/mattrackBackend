@@ -8,7 +8,6 @@ const Inventory = require("../../models/inventory");
 exports.addDisbursedData = async (req, res) => {
     const session = await mongoose.startSession();
     session.startTransaction();
-  
     try {
       const {
         disbursed = "disbursed",

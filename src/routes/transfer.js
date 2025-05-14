@@ -4,7 +4,7 @@ const { sendMaterials, getTransfers, acceptTransfer } = require("../controllers/
 const router = express.Router()
 
 router.post("/transfer", sendMaterials)
-router.post("/transferAccept", acceptTransfer)
+router.patch("/transferAccept/:transferId", acceptTransfer)
 router.get('/transfer', getTransfers)
 
 module.exports = router

@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
 
-// Define Schema
 const TransferDataSchema = new mongoose.Schema({
   fromSite: {
     type: String,
@@ -12,12 +11,16 @@ const TransferDataSchema = new mongoose.Schema({
   },
   materials: [
     {
-      materialId: {
+      materialName: {
         type: String,
         required: true,
       },
       quantity: {
         type: Number,
+        required: true,
+      },
+      unit: {
+        type: String,
         required: true,
       },
     },
@@ -40,7 +43,6 @@ const TransferDataSchema = new mongoose.Schema({
   },
 });
 
-// Create Model
 const TransferData = mongoose.model("TransferData", TransferDataSchema);
 
 module.exports = TransferData;
