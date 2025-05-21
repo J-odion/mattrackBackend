@@ -70,6 +70,7 @@ exports.requestMaterial = async (req, res) => {
     const materialEntries = materials.map(material => ({
       materialName: material.materialName,
       quantity: Number(material.quantity),
+      unit: material.unit
     }));
 
     const newRequest = new RequestMaterial({
@@ -79,6 +80,7 @@ exports.requestMaterial = async (req, res) => {
       date: date ? new Date(date) : Date.now(),
       materials: materialEntries,
       houseType,
+      constructionNo,
       status: "pending",
     });
 
