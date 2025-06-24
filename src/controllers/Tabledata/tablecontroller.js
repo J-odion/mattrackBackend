@@ -65,7 +65,7 @@ exports.requestMaterial = async (req, res) => {
   session.startTransaction();
 
   try {
-    const { name, purpose, siteLocation, date, materials, houseType } = req.body;
+    const { name, purpose, siteLocation, constructionNo, date, materials, houseType } = req.body;
 
     const materialEntries = materials.map(material => ({
       materialName: material.materialName,
