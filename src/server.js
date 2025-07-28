@@ -16,6 +16,7 @@ const ALLOWED_ORIGINS = [
   "https://mattrack.vercel.app",
   "https://mattrack-app.vercel.app",
   "https://mattrack.kairoshof.com",
+  "https://preview-axios-api-setup-kzmgnz5at0jc6a5hisza.vusercontent.net/",
   "http://localhost:3000",
   "http://localhost:6000",
   "http://localhost:5000",
