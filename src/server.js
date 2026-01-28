@@ -16,7 +16,8 @@ const ALLOWED_ORIGINS = [
   "https://mattrack.vercel.app",
   "https://mattrack-app.vercel.app",
   "https://mattrack.kairoshof.com",
-  "https://preview-axios-api-setup-kzmgnz5at0jc6a5hisza.vusercontent.net/",
+  "https://preview-axios-api-setup-kzmgnz5at0jc6a5hisza.vusercontent.net",
+  "https://id-preview--1b837b0f-88c1-4834-93bc-a39b5bcd985d.lovable.app",
   "http://localhost:3000",
   "http://localhost:6000",
   "http://localhost:5000",
@@ -53,5 +54,6 @@ app.use("/api", require("./routes/tableRoutes"));
 app.use("/api", require("./routes/standardAllocation"));
 app.use("/api", require("./routes/transfer"));
 app.use(errorHandler);
+
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
